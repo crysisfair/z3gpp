@@ -19,7 +19,7 @@ group_columns = {
 }
 meeting_columns = {
     'index': 'no',
-    'columns': ['no', 'title', 'town', 'start_date', 'end_date', 'start_tdoc', 'end_tdoc', 'full_list', 'files']
+    'columns': ['no', 'title', 'town', 'start', 'end', 'start_tdoc', 'end_tdoc', 'full_list', 'files']
 }
 
 tdoc_columns = {
@@ -47,6 +47,7 @@ group_name_translation = {
     'r3': 'ran3',
     'r4': 'ran4'
 }
+
 
 class Progress:
     """
@@ -101,7 +102,7 @@ class Progress:
         sys.stdout.write('\n')
 
 
-class z3g_utils:
+class Z3gUtils:
     """
     Utils for z3gpp
     """
@@ -284,7 +285,6 @@ class z3g_utils:
         :return:
         """
         res, data = self.fetch(url)
-        data = data
         rows = []
         headers = []
         if res is True:
@@ -405,8 +405,67 @@ class z3g_utils:
                         res, tdoc_list = self.fetch_tdoc_list(meeting['full_list'])
         return res, tdoc_list
 
+    def fetch_ftp_list(self, files_url, meeting):
+        """
+        Fetch tdoc list from ftp server.
+        :param files_url: File_url is column 'files' of meeting
+        :return:
+        """
+        res, data = self.fetch(files_url)
+        list = []
+        ftp_list = pd.DataFrame(index=ftp_columns['index'], columns=ftp_columns['columns'])
+        if res is True:
+            if data.find('Zips') >= 0:
+                soup = BeautifulSoup(data, 'lxml')
+                with soup.find_all('a') as alist:
+                    for a in alist:
+                        if str(a.string).find('Zips') >= 0:
+                            new_url = a.get['href']
+                            if new_url is not None:
+                                return self.fetch_ftp_list(new_url, meeting)
+            else:
+                soup = BeautifulSoup(data, 'lxml')
+                for a in soup.pre.children:
+                    if str(a.string).find('Parent') < 0:
+                        file_name = a.string
+                        splits = file_name.split('.')
+                        if len(splits) > 0:
+                            tdoc = splits[0]
+                        else:
+                            continue
+                        href = a.get('href')
+                        if href is None:
+                            continue
+                        list.append({
+                            'tdoc': tdoc,
+                            'file_name': file_name,
+                            'href': href
+                        })
+        ftp_list = pd.DataFrame(data=list, index=ftp_columns['index'], columns=ftp_columns['columns'])
+        return res, ftp_list
 
-class z3g:
+    def get_ftp_list(self, meeting_name, force_reload=False):
+        """
+        Get ftp list of a meeting
+        :param meeting_name: Meeting name with short group name, i.e. R1-XXX,
+        :param force_reload:
+        :return:
+        """
+        splits = meeting_name.lower().split('-')
+        res, ftp_list = self.load_df('ftp_list' + meeting_name)
+        if res is False or force_reload is True:
+            ftp_list = pd.DataFrame(index=ftp_columns['index'], columns=ftp_columns['columns'])
+            if len(splits) >= 1:
+                group_name = splits[0]
+                res, meetings = self.get_meetings(group_name, force_reload)
+                if res is True:
+                    meeting = meetings.get(meeting_name.lower())
+                    if meeting is not None:
+                        res, ftp_list = self.fetch_ftp_list(meeting['files'])
+        return res, ftp_list
+
+
+class Z3gpp:
     """
     Main class of z3gpp
     """
