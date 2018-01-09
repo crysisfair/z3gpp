@@ -1,39 +1,41 @@
 # -*- coding: UTF-8 -*-
-import sys
-import os
-import requests
 import json
-import re
-from tqdm import tqdm
-import pandas as pd
-from bs4 import BeautifulSoup
-from time import time
-from io import BytesIO
-from io import FileIO
+import os
 import random
+import re
+import sys
+import traceback
+from io import BytesIO, FileIO
+from time import time
+
+import bs4.element
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 base_url = 'http://www.3gpp.org'
 group_columns = {
-    'index': 'name',
-    'columns': ['id', 'name', 'url']
+    'index'  : 'id',
+    'columns': ['name', 'url']
 }
 meeting_columns = {
-    'index': 'no',
+    'index'  : 'no',
     'columns': ['no', 'title', 'town', 'start', 'end', 'start_tdoc', 'end_tdoc', 'full_list', 'files']
 }
 
 tdoc_columns = {
-    'index': 'tdoc',
+    'index'  : 'tdoc',
     'columns': ['tdoc', 'file_name', 'title', 'source', 'href']
 }
 
 tdoc_list_columns = {
-    'index': 'tdoc',
+    'index'  : 'tdoc',
     'columns': ['tdoc', 'title', 'source']
 }
 
 ftp_columns = {
-    'index': 'name',
+    'index'  : 'name',
     'columns': ['tdoc', 'file_name', 'href']
 }
 
@@ -54,7 +56,7 @@ class Progress:
     Use this when total progress cannot be known before operation
     """
 
-    def __init__(self, count = 0.0, unit='it'):
+    def __init__(self, count=0.0, unit='it'):
         self.count = count
         self.start = 0.0
         self.unit = unit
@@ -155,6 +157,7 @@ class Z3gUtils:
                 res = True
         except Exception as ex:
             print(ex)
+            traceback.print_exc()
             res = False
         finally:
             b.close()
@@ -164,14 +167,14 @@ class Z3gUtils:
         if os.path.exists(self.cache_root) is False:
             os.mkdir(self.cache_root, mode=0o755)
         if type(data) is pd.DataFrame:
-            data.to_csv(self.cache_root+name+'.csv', sep=',')
+            data.to_csv(self.cache_root + name + '.csv', sep=',')
 
     def load_df(self, name):
         path = self.cache_root + name + '.csv'
         res = False
         data = pd.DataFrame()
         if os.path.exists(path) is True:
-            data.from_csv(path)
+            data = pd.read_csv(path)
             res = True
         return res, data
 
@@ -184,26 +187,30 @@ class Z3gUtils:
         res = []
         if submenu is not None:
             for sub_li in submenu.children:
-                if sub_li.a is not None and sub_li.a.string is not None:
+                if type(sub_li) is bs4.element.Tag and sub_li.a is not None and sub_li.a.string is not None:
                     sub_li_name = str(sub_li.a.string).strip().lower()
                     if sub_li_name.find('-') >= 0:
                         group_name = sub_li_name.split('-')[0].strip()
                     elif sub_li_name.find('plenary') >= 0:
-                        group_name = sub_li_name.replace(' ', '-')
+                        group_name = sub_li_name
                     else:
                         continue
                     print('\tFind ', group_name)
-                    for li in sub_li.children:
-                        if li.a is not None and li.a.string is not None:
+                    for li in sub_li.ul.children:
+                        if type(li) is bs4.element.Tag and li.a is not None and li.a.string is not None:
                             li_name = str(li.a.string).strip().lower()
                             if li_name.find('meetings') >= 0:
+                                if li.ul is None:
+                                    print('\tFind empty ul in ', sub_li_name)
+                                    continue
                                 for al in li.ul.children:
-                                    if al.a is not None and al.a.string is not None:
+                                    if type(al) is bs4.element.Tag and al.a is not None and al.a.string is not None:
                                         al_name = str(al.a.string).strip().lower()
-                                        if al_name.find('full'):
-                                            res.append({'name': group_name,
-                                                        'url': base_url + al.a.attrs['href']})
-        return pd.DataFrame(data=res, index=group_columns['index'], columns=group_columns['columns']).drop_duplicates()
+                                        if al_name.find('full') >= 0:
+                                            res.append({'name': group_name.replace(' ', '-'),
+                                                        'url' : base_url + al.a.attrs['href']})
+        # return pd.DataFrame(data=res, columns=group_columns['columns']).drop_duplicates()
+        return res
 
     def handle_submenu_groups(self, submenu):
         """
@@ -211,16 +218,18 @@ class Z3gUtils:
         :param submenu: Specifications Groups submenu
         :return: Dataframe of groups
         """
-        groups = pd.DataFrame(index=group_columns['index'], columns=group_columns['columns'])
+        # groups = pd.DataFrame(columns=group_columns['columns'])
+        groups = []
         if submenu is not None:
             for sub_li in submenu.children:
-                if sub_li.a is not None and sub_li.a.string is not None:
+                if type(sub_li) is bs4.element.Tag and sub_li.a is not None and sub_li.a.string is not None:
                     sub_li_name = str(sub_li.a.string).strip().lower().replace(' ', '_')
                     print('Find group submenu', sub_li_name)
                     # available groups
                     if sub_li_name.find('tsg') >= 0 and sub_li_name.find('close') < 0:
                         group_df = self.handle_single_submenu_group(sub_li.ul)
-                        groups.append(group_df)
+                        # groups.append(group_df)
+                        groups.extend(group_df)
         return groups
 
     def fetch_groups(self, url):
@@ -230,21 +239,22 @@ class Z3gUtils:
         :return: Dataframe of groups
         """
         res, data = self.fetch(url)
-        groups = pd.DataFrame(index=group_columns['index'], columns=group_columns['columns'])
+        gs = []
         if res is True:
             soup = BeautifulSoup(data, 'lxml')
             navi_ul = soup.find(id='nav')
             if navi_ul is None:
                 return False, None
             for top_li in navi_ul.children:
-                if top_li.a is not None and top_li.a.string is not None:
-                    top_li_name = str(top_li.a.string).strip().lower().replace(' ', '_')
+                if type(top_li) is bs4.element.Tag and top_li.a is not None and top_li.a.string is not None:
+                    top_li_name = str(top_li.a.string).strip()
                     print('Find submenu ', top_li_name)
-                    if top_li_name.find('about') >= 0:
+                    if top_li_name.find('About') >= 0:
                         continue
-                    elif top_li_name.find('groups') >= 0:
-                        groups.append(self.handle_submenu_groups(top_li.ul))
-        return groups
+                    elif top_li_name.find('Groups') >= 0:
+                        # groups.append(self.handle_submenu_groups(top_li.ul))
+                        gs.extend(self.handle_submenu_groups(top_li.ul))
+        return pd.DataFrame(data=gs, columns=group_columns['columns'])
 
     def get_groups(self, force_reload=False):
         """
@@ -254,10 +264,11 @@ class Z3gUtils:
         """
         res, groups = self.load_df('groups')
         if res is False or force_reload is True:
+            print('Get groups from ', urls['groups'])
             groups = self.fetch_groups(urls['groups'])
             if groups.empty is False:
-                res = True
                 self.save_df(groups, 'groups')
+                res = True
         return res, groups
 
     def get_group_meeting_url(self, short_group_name, force_reload=True):
@@ -319,7 +330,7 @@ class Z3gUtils:
         :return:
         """
         res, headers, rows = self.fetch_table_rows(url)
-        meetings = pd.DataFrame(index=meeting_columns['index'], columns=meeting_columns['columns'])
+        meetings = pd.DataFrame(columns=meeting_columns['columns'])
         if res is True:
             ms = []
             for row in rows:
@@ -327,7 +338,7 @@ class Z3gUtils:
                 for td in row.children:
                     meeting = {}
                     if len(td.children) == 1:
-                        if td.a is not None:
+                        if type(td.a) is bs4.element.Tag:
                             meeting[headers[col]] = str(td.a.string.lower())
                         else:
                             meeting[headers[col]] = str(td.string.lower())
@@ -345,7 +356,7 @@ class Z3gUtils:
 
                     ms.append(meeting)
                     col = col + 1
-            meetings = pd.DataFrame(data=ms, index=meeting_columns['index'], columns=meeting_columns['columns'])
+            meetings = pd.DataFrame(data=ms, columns=meeting_columns['columns'])
         return res, meetings
 
     def get_meetings(self, group_name, force_reload=False):
@@ -369,20 +380,20 @@ class Z3gUtils:
         :return:
         """
         res, headers, rows = self.fetch_table_rows(url)
-        tdoc_list = pd.DataFrame(index=tdoc_list_columns['index'], columns=tdoc_list_columns['columns'])
+        tdoc_list = pd.DataFrame(columns=tdoc_list_columns['columns'])
         if res is True:
             list = []
             for row in rows:
                 col = 0
-                for td in row.children:
+                for td in row.find_all('td'):
                     tdoc = {}
-                    if td.a is not None:
+                    if td.a is not None and td.a.string is not None:
                         tdoc[headers[col]] = str(td.a.string).strip()
                     elif td.string is not None:
                         tdoc[headers[col]] = str(td.string).strip()
                     col = col + 1
                     list.append(tdoc)
-            tdoc_list = pd.DataFrame(data=list, index=tdoc_list_columns['index'], columns=tdoc_list_columns['columns'])
+            tdoc_list = pd.DataFrame(data=list, columns=tdoc_list_columns['columns'])
         return res, tdoc_list
 
     def get_tdoc_list(self, meeting_name, force_reload=False):
@@ -395,7 +406,7 @@ class Z3gUtils:
         splits = meeting_name.lower().split('-')
         res, tdoc_list = self.load_df('tdoc_list' + meeting_name)
         if res is False or force_reload is True:
-            tdoc_list = pd.DataFrame(index=tdoc_list_columns['index'], columns=tdoc_list_columns['columns'])
+            tdoc_list = pd.DataFrame(columns=tdoc_list_columns['columns'])
             if len(splits) >= 1:
                 group_name = splits[0]
                 res, meetings = self.get_meetings(group_name, force_reload)
@@ -413,7 +424,7 @@ class Z3gUtils:
         """
         res, data = self.fetch(files_url)
         list = []
-        ftp_list = pd.DataFrame(index=ftp_columns['index'], columns=ftp_columns['columns'])
+        ftp_list = pd.DataFrame(columns=ftp_columns['columns'])
         if res is True:
             if data.find('Zips') >= 0:
                 soup = BeautifulSoup(data, 'lxml')
@@ -425,7 +436,7 @@ class Z3gUtils:
                                 return self.fetch_ftp_list(new_url, meeting)
             else:
                 soup = BeautifulSoup(data, 'lxml')
-                for a in soup.pre.children:
+                for a in soup.pre.find_all('a'):
                     if str(a.string).find('Parent') < 0:
                         file_name = a.string
                         splits = file_name.split('.')
@@ -437,11 +448,11 @@ class Z3gUtils:
                         if href is None:
                             continue
                         list.append({
-                            'tdoc': tdoc,
+                            'tdoc'     : tdoc,
                             'file_name': file_name,
-                            'href': href
+                            'href'     : href
                         })
-        ftp_list = pd.DataFrame(data=list, index=ftp_columns['index'], columns=ftp_columns['columns'])
+        ftp_list = pd.DataFrame(data=list, columns=ftp_columns['columns'])
         return res, ftp_list
 
     def get_ftp_list(self, meeting_name, force_reload=False):
@@ -454,7 +465,7 @@ class Z3gUtils:
         splits = meeting_name.lower().split('-')
         res, ftp_list = self.load_df('ftp_list' + meeting_name)
         if res is False or force_reload is True:
-            ftp_list = pd.DataFrame(index=ftp_columns['index'], columns=ftp_columns['columns'])
+            ftp_list = pd.DataFrame(columns=ftp_columns['columns'])
             if len(splits) >= 1:
                 group_name = splits[0]
                 res, meetings = self.get_meetings(group_name, force_reload)
@@ -477,11 +488,12 @@ class Z3gpp:
             self.proxy = self.get_proxy(proxy_file)
         self.session = requests.Session()
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/47.0.2526.80 Safari/537.36',
-            'Accept': 'text/html',
+            'User-Agent'     : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) '
+                               'Chrome/47.0.2526.80 Safari/537.36',
+            'Accept'         : 'text/html',
             'Accept-Encoding': 'gzip'
         }
+        self.zu = Z3gUtils(session=self.session, proxy=self.proxy, headers=self.headers)
 
     def get_proxy(self, proxy_file):
         """
@@ -500,12 +512,12 @@ class Z3gpp:
                     port = proxies.get('port')
                     if user is None or passwd is None:
                         proxy = {
-                            'http': 'http://{0}:{1}'.format(server, port),
+                            'http' : 'http://{0}:{1}'.format(server, port),
                             'https': 'http://{0}:{1}'.format(server, port)
                         }
                     else:
                         proxy = {
-                            'http': 'http://{0}:{1}@{2}:{3}'.format(user, passwd, server, port),
+                            'http' : 'http://{0}:{1}@{2}:{3}'.format(user, passwd, server, port),
                             'https': 'http://{0}:{1}@{2}:{3}'.format(user, passwd, server, port)
                         }
             except Exception as e:
