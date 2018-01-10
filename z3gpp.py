@@ -51,6 +51,13 @@ group_name_translation = {
 }
 
 
+class PageFormatIncorrectExcept(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 class Progress:
     """
     Use this when total progress cannot be known before operation
@@ -144,7 +151,7 @@ class Z3gUtils:
                     b.flush()
                     p.end('Download done')
                 else:
-                    size = int(raw_size) / 1024
+                    size = int(int(raw_size) / 1024)
                     for t in tqdm(data.iter_content(chunk_size=1024), unit='Kib', total=size):
                         b.write(t)
                     b.flush()
@@ -255,7 +262,7 @@ class Z3gUtils:
                         continue
                     elif top_li_name.find('Groups') >= 0:
                         # groups.append(self.handle_submenu_groups(top_li.ul))
-                        gs.extend(self.handle_submenu_groups(top_li.ul))
+                        gs.exten1d(self.handle_submenu_groups(top_li.ul))
         return pd.DataFrame(data=gs, columns=group_columns['columns'])
 
     def get_groups(self, force_reload=False):
@@ -272,6 +279,8 @@ class Z3gUtils:
                 print('Get ', len(groups), ' groups')
                 self.save_df(groups, 'groups')
                 res = True
+            else:
+                raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + urls['groups'])
         return res, groups
 
     def get_group_meeting_url(self, short_group_name, force_reload=True):
@@ -307,25 +316,22 @@ class Z3gUtils:
             res = False
             soup = BeautifulSoup(data, 'lxml')
             table = soup.find(id='a3dyntab')
-            if table is not None:
-                return res, None
+            if table is None:
+                return res, None, None
             header = table.thead
             if header is not None:
-                for th in header.children:
-                    if th.string is not None:
-                        s = str(th.string).split(' ')
-                        if len(s) > 0:
-                            headers.append(s[0])
+                for tr in header.tr.find_all('th'):
+                    for s in tr.strings:
+                        if len(s.strip()) > 0:
+                            headers.append(str(s))
+                            break
             else:
                 raise Exception('Table header is none')
-            body = table.tdoby
+            body = table.tbody
             if body is not None:
-                for tr in body.children:
-                    if len(headers) == len(tr.chilren):
-                        rows.append(tr)
-                    else:
-                        print('Find error in ', str(tr))
-                        continue
+                for tr in body.find_all('tr'):
+                    rows.append(tr)
+            res = True
         return res, headers, rows
 
     def fetch_meetings(self, url):
@@ -335,33 +341,41 @@ class Z3gUtils:
         :return:
         """
         res, headers, rows = self.fetch_table_rows(url)
+        print('Headers are, ', headers)
         meetings = pd.DataFrame(columns=meeting_columns['columns'])
         if res is True:
             ms = []
             for row in rows:
                 col = 0
-                for td in row.children:
-                    meeting = {}
-                    if len(td.children) == 1:
-                        if type(td.a) is bs4.element.Tag:
-                            meeting[headers[col]] = str(td.a.string.lower())
+                meeting = {}
+                for td in row.find_all('td'):
+                    alist = td.find_all('a')
+                    if headers[col].find('tdoc') >= 0:
+                        if len(alist) == 2:
+                            s1 = str(alist[0].string).strip().lower()
+                            tdoc_range = re.findall(r'r1-\d+', s1)
+                            if len(tdoc_range) == 2:
+                                meeting['start_tdoc'] = tdoc_range[0]
+                                meeting['end_tdoc'] = tdoc_range[1]
+                            href = alist[1].get('href')
+                            if href is not None:
+                                meeting['full_list'] = str(href)
+                            else:
+                                meeting['full_list'] = '-'
                         else:
-                            meeting[headers[col]] = str(td.string.lower())
-                    elif len(td.children) == 2:
-                        s1 = str(td.chilren[0].string).strip().lower()
-                        tdoc_range = re.findall(r'r1-\d+', s1)
-                        if len(tdoc_range) == 2:
-                            meeting['start_tdoc'] = tdoc_range[0]
-                            meeting['end_tdoc'] = tdoc_range[1]
-                        href = td.chilren[1].get('href')
-                        if href is not None:
-                            meeting['full_list'] = str(href)
-                        else:
-                            meeting['full_list'] = '-'
+                            meeting['start_tdoc'] = 0
+                            meeting['end_tdoc'] = 0
+                            meeting['full_list'] = ''
+                    elif len(alist) == 1:
+                        meeting[headers[col]] = str(str(td.a.string).strip())
+                    elif td.string is not None:
+                        meeting[headers[col]] = str(td.string).strip()
 
-                    ms.append(meeting)
                     col = col + 1
+                ms.append(meeting)
             meetings = pd.DataFrame(data=ms, columns=meeting_columns['columns'])
+        else:
+            raise PageFormatIncorrectExcept('Page format is not correct, nothing will be downloaded. Url is ' + url)
         return res, meetings
 
     def get_meetings(self, group_name, force_reload=False):
@@ -376,6 +390,12 @@ class Z3gUtils:
             res, group_meeting_url = self.get_group_meeting_url(short_group_name=group_name, force_reload=force_reload)
             if res is True:
                 res, meetings = self.fetch_meetings(group_meeting_url)
+            if meetings.empty is False:
+                print('Get ', len(meetings), ' meetings')
+                self.save_df(meetings, 'group' + group_name)
+                res = True
+            else:
+                raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + group_meeting_url)
         return res, meetings
 
     def fetch_tdoc_list(self, url):
@@ -399,6 +419,8 @@ class Z3gUtils:
                     col = col + 1
                     list.append(tdoc)
             tdoc_list = pd.DataFrame(data=list, columns=tdoc_list_columns['columns'])
+        else:
+            raise PageFormatIncorrectExcept('Page format is not correct, nothing will be downloaded. Url is ' + url)
         return res, tdoc_list
 
     def get_tdoc_list(self, meeting_name, force_reload=False):

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f59e7ac1-d05d-42dd-9588-447453d40349" name="Default" comment="Add fetch ftp list">
+    <list default="true" id="f59e7ac1-d05d-42dd-9588-447453d40349" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/tests/test_z3gUtils.py" afterPath="$PROJECT_DIR$/tests/test_z3gUtils.py" />
       <change beforePath="$PROJECT_DIR$/z3gpp.py" afterPath="$PROJECT_DIR$/z3gpp.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,32 +13,32 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/z3gpp$Unittests_in_test_z3gUtils_py.coverage" NAME="Unittests in test_z3gUtils.py Coverage Results" MODIFIED="1515601942565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/z3gpp$Unittests_in_test_z3gUtils_py.coverage" NAME="Unittests in test_z3gUtils.py Coverage Results" MODIFIED="1515608247134" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="z3gpp.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="z3gpp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/z3gpp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="378" column="0" lean-forward="false" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
+            <state relative-caret-position="329">
+              <caret line="154" column="51" lean-forward="false" selection-start-line="154" selection-start-column="51" selection-end-line="154" selection-end-column="51" />
               <folding>
                 <element signature="e#24#35#0" expanded="true" />
-                <element signature="e#1087#1184#0" expanded="false" />
-                <element signature="e#1230#2020#0" expanded="false" />
-                <element signature="e#2057#2673#0" expanded="false" />
+                <element signature="e#1246#1343#0" expanded="false" />
+                <element signature="e#1389#2179#0" expanded="false" />
+                <element signature="e#2216#2832#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_z3gUtils.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test_z3gUtils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="40" column="11" lean-forward="false" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+            <state relative-caret-position="737">
+              <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding>
-                <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -228,38 +227,45 @@
       <option name="project" value="LOCAL" />
       <updated>1515433053531</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fix get meetings url from groups error&#10;&#10;1.Add unit test method for get_meetings">
+      <created>1515602173468</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1515602173468</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 01m 23s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 01h 40m 03s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 04m 29s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 01h 40m 37s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 04m 41s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 01h 41m 56s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 05m 52s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 01h 57m 13s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 09m 55s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 01h 59m 02s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 14m 19s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 02h 01m 18s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 16m 29s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 02h 12m 08s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 30m 52s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 02h 13m 09s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 32m 13s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 02h 15m 05s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 00h 33m 47s.xml">
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 02h 17m 36s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
   </component>
@@ -333,31 +339,17 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Add fetch ftp list" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add fetch ftp list" />
+    <MESSAGE value="Fix get meetings url from groups error&#10;&#10;1.Add unit test method for get_meetings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix get meetings url from groups error&#10;&#10;1.Add unit test method for get_meetings" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>374</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>294</line>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>337</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="33" />
+      <option name="time" value="40" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -368,47 +360,53 @@
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
-        <expression-string>list(groups['name'])</expression-string>
+        <expression-string>tr.strings</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>list(groups['name']))</expression-string>
+        <expression-string>header.strings[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>groups['name'].data</expression-string>
+        <expression-string>for s in header.strings:
+    print(s)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>groups['name']</expression-string>
+        <expression-string>header.strings</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>long_name in groups['name']</expression-string>
+        <expression-string>print(header.strings)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>long_name in groups</expression-string>
+        <expression-string>tr.contents[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>groups['ran1']</expression-string>
+        <expression-string>tr.contents</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>type(groups) is pd.DataFrame</expression-string>
+        <expression-string>print(tr)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>al_name.find('full')</expression-string>
+        <expression-string>header</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>str(th.string).split(' ')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -438,9 +436,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#24#35#0" expanded="true" />
-            <element signature="e#1087#1184#0" expanded="false" />
-            <element signature="e#1230#2020#0" expanded="false" />
-            <element signature="e#2057#2673#0" expanded="false" />
+            <element signature="e#1246#1343#0" expanded="false" />
+            <element signature="e#1389#2179#0" expanded="false" />
+            <element signature="e#2216#2832#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -450,7 +448,7 @@
         <state relative-caret-position="68">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -461,9 +459,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#24#35#0" expanded="true" />
-            <element signature="e#1087#1184#0" expanded="false" />
-            <element signature="e#1230#2020#0" expanded="false" />
-            <element signature="e#2057#2673#0" expanded="false" />
+            <element signature="e#1246#1343#0" expanded="false" />
+            <element signature="e#1389#2179#0" expanded="false" />
+            <element signature="e#2216#2832#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -492,25 +490,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/z3gpp.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="378" column="0" lean-forward="false" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
+        <state relative-caret-position="737">
+          <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
           <folding>
-            <element signature="e#24#35#0" expanded="true" />
-            <element signature="e#1087#1184#0" expanded="false" />
-            <element signature="e#1230#2020#0" expanded="false" />
-            <element signature="e#2057#2673#0" expanded="false" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
+    <entry file="file://$PROJECT_DIR$/z3gpp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="40" column="11" lean-forward="false" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+        <state relative-caret-position="329">
+          <caret line="154" column="51" lean-forward="false" selection-start-line="154" selection-start-column="51" selection-end-line="154" selection-end-column="51" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#24#35#0" expanded="true" />
+            <element signature="e#1246#1343#0" expanded="false" />
+            <element signature="e#1389#2179#0" expanded="false" />
+            <element signature="e#2216#2832#0" expanded="false" />
           </folding>
         </state>
       </provider>
