@@ -155,6 +155,8 @@ class Z3gUtils:
                     s = b.getvalue()
                 print('Write done')
                 res = True
+            else:
+                print('Get response code ', data.status_code, ', no data will be downloaded')
         except Exception as ex:
             print(ex)
             traceback.print_exc()
@@ -267,6 +269,7 @@ class Z3gUtils:
             print('Get groups from ', urls['groups'])
             groups = self.fetch_groups(urls['groups'])
             if groups.empty is False:
+                print('Get ', len(groups), ' groups')
                 self.save_df(groups, 'groups')
                 res = True
         return res, groups
@@ -284,9 +287,11 @@ class Z3gUtils:
             res = False
             if short_group_name in group_name_translation:
                 long_name = group_name_translation[short_group_name]
-                if long_name in groups:
-                    url = groups[long_name]
-                    res = True
+                for index, row in groups.iterrows():
+                    if long_name == row['name']:
+                        url = row['url']
+                        res = True
+                        break
         return res, url
 
     def fetch_table_rows(self, url):

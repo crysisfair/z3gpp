@@ -1,10 +1,12 @@
+import os
+import traceback
 import unittest
 from unittest import TestCase
-from z3gpp import Z3gUtils
-import requests
-import os
+
 import pandas as pd
-import traceback
+import requests
+
+from z3gpp import Z3gUtils
 
 
 class TestZ3gUtils(TestCase):
@@ -24,7 +26,7 @@ class TestZ3gUtils(TestCase):
     def test_get_groups(self):
         self.base_init()
         try:
-            res, groups = self.zu.get_groups(force_reload=True)
+            res, groups = self.zu.get_groups()
         except Exception as e:
             print(e)
             traceback.print_exc()
@@ -36,6 +38,22 @@ class TestZ3gUtils(TestCase):
         else:
             self.fail()
 
+    def test_get_meetings(self):
+        self.base_init()
+        try:
+            res, meetings = self.zu.get_meetings('r1', force_reload=False)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            res = False
+
+        if res is True and type(meetings) is pd.DataFrame:
+            meetings.to_csv('result/meetings_ran1.csv')
+            self.assertEqual(res, True)
+        else:
+            self.fail()
+
 
 if __name__ == '__main__':
+    unittest.TestLoader().loadTestsFromName('user.UserTestCase.test_get_meetings')
     unittest.main()
