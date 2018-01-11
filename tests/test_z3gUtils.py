@@ -53,7 +53,22 @@ class TestZ3gUtils(TestCase):
         else:
             self.fail()
 
+    def test_get_tdoc_list(self):
+        self.base_init()
+        try:
+            res, tdocs = self.zu.get_tdoc_list('r1-90', force_reload=False)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+            res = False
+
+        if res is True and type(tdocs) is pd.DataFrame:
+            tdocs.to_csv('result/tdocs_r1-90.csv')
+            self.assertEqual(res, True)
+        else:
+            self.fail()
+
 
 if __name__ == '__main__':
-    unittest.TestLoader().loadTestsFromName('user.UserTestCase.test_get_meetings')
+    unittest.TestLoader().loadTestsFromName('user.UserTestCase.test_get_tdoc_list')
     unittest.main()

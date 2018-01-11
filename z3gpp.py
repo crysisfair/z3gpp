@@ -21,7 +21,7 @@ group_columns = {
 }
 meeting_columns = {
     'index'  : 'no',
-    'columns': ['no', 'title', 'town', 'start', 'end', 'start_tdoc', 'end_tdoc', 'full_list', 'files']
+    'columns': ['Meeting', 'Title', 'Town', 'Start', 'End', 'start_tdoc', 'end_tdoc', 'full_list', 'Files']
 }
 
 tdoc_columns = {
@@ -31,7 +31,7 @@ tdoc_columns = {
 
 tdoc_list_columns = {
     'index'  : 'tdoc',
-    'columns': ['tdoc', 'title', 'source']
+    'columns': ['Tdoc', 'Title', 'Source']
 }
 
 ftp_columns = {
@@ -361,13 +361,19 @@ class Z3gUtils:
                             if href is not None:
                                 meeting['full_list'] = str(href)
                             else:
-                                meeting['full_list'] = '-'
+                                meeting['full_list'] = ''
                         else:
                             meeting['start_tdoc'] = 0
                             meeting['end_tdoc'] = 0
                             meeting['full_list'] = ''
                     elif len(alist) == 1:
-                        meeting[headers[col]] = str(str(td.a.string).strip())
+                        if headers[col].find('Files') >= 0:
+                            if td.a.get('href') is not None:
+                                meeting[headers[col]] = str(td.a.href)
+                            else:
+                                meeting[headers[col]] = ''
+                        else:
+                            meeting[headers[col]] = str(str(td.a.string).strip())
                     elif td.string is not None:
                         meeting[headers[col]] = str(td.string).strip()
 
@@ -376,7 +382,7 @@ class Z3gUtils:
             meetings = pd.DataFrame(data=ms, columns=meeting_columns['columns'])
         else:
             raise PageFormatIncorrectExcept('Page format is not correct, nothing will be downloaded. Url is ' + url)
-        return res, meetings
+        return res, meetings.drop_duplicates()
 
     def get_meetings(self, group_name, force_reload=False):
         """
