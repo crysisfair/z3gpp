@@ -17,26 +17,26 @@ from tqdm import tqdm
 base_url = 'http://www.3gpp.org'
 group_columns = {
     'index'  : 'id',
-    'columns': ['name', 'url']
+    'columns': ['Name', 'Url']
 }
 meeting_columns = {
     'index'  : 'no',
-    'columns': ['Meeting', 'Title', 'Town', 'Start', 'End', 'start_tdoc', 'end_tdoc', 'full_list', 'Files']
+    'columns': ['Meeting', 'Title', 'Town', 'Start', 'End', 'StartTdoc', 'EndTdoc', 'FullList', 'Files']
 }
 
 tdoc_columns = {
     'index'  : 'tdoc',
-    'columns': ['tdoc', 'file_name', 'title', 'source', 'href']
+    'columns': ['Tdoc', 'Title', 'Meeting', 'FileName', 'Source', 'Href']
 }
 
 tdoc_list_columns = {
     'index'  : 'tdoc',
-    'columns': ['Tdoc', 'Title', 'Source']
+    'columns': ['Tdoc', 'Title', 'Source', 'Meeting']
 }
 
 ftp_columns = {
     'index'  : 'name',
-    'columns': ['tdoc', 'file_name', 'href']
+    'columns': ['Tdoc', 'FileName', 'Meeting', 'Href']
 }
 
 urls = {
@@ -51,12 +51,21 @@ group_name_translation = {
 }
 
 
+class ResourceNotFoundErr(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
 class PageFormatIncorrectExcept(Exception):
     def __init__(self, value):
         self.value = value
 
     def __str__(self):
         return repr(self.value)
+
 
 class Progress:
     """
@@ -216,8 +225,8 @@ class Z3gUtils:
                                     if type(al) is bs4.element.Tag and al.a is not None and al.a.string is not None:
                                         al_name = str(al.a.string).strip().lower()
                                         if al_name.find('full') >= 0:
-                                            res.append({'name': group_name.replace(' ', '-'),
-                                                        'url' : base_url + al.a.attrs['href']})
+                                            res.append({'Name': group_name.replace(' ', '-'),
+                                                        'Url': base_url + al.a.attrs['href']})
         # return pd.DataFrame(data=res, columns=group_columns['columns']).drop_duplicates()
         return res
 
@@ -262,7 +271,7 @@ class Z3gUtils:
                         continue
                     elif top_li_name.find('Groups') >= 0:
                         # groups.append(self.handle_submenu_groups(top_li.ul))
-                        gs.exten1d(self.handle_submenu_groups(top_li.ul))
+                        gs.extend(self.handle_submenu_groups(top_li.ul))
         return pd.DataFrame(data=gs, columns=group_columns['columns'])
 
     def get_groups(self, force_reload=False):
@@ -297,8 +306,8 @@ class Z3gUtils:
             if short_group_name in group_name_translation:
                 long_name = group_name_translation[short_group_name]
                 for index, row in groups.iterrows():
-                    if long_name == row['name']:
-                        url = row['url']
+                    if long_name == row['Name']:
+                        url = row['Url']
                         res = True
                         break
         return res, url
@@ -355,17 +364,17 @@ class Z3gUtils:
                             s1 = str(alist[0].string).strip().lower()
                             tdoc_range = re.findall(r'r1-\d+', s1)
                             if len(tdoc_range) == 2:
-                                meeting['start_tdoc'] = tdoc_range[0]
-                                meeting['end_tdoc'] = tdoc_range[1]
+                                meeting['StartTdoc'] = tdoc_range[0]
+                                meeting['EndToc'] = tdoc_range[1]
                             href = alist[1].get('href')
                             if href is not None:
-                                meeting['full_list'] = str(href)
+                                meeting['FullList'] = str(href)
                             else:
-                                meeting['full_list'] = ''
+                                meeting['FullList'] = ''
                         else:
-                            meeting['start_tdoc'] = 0
-                            meeting['end_tdoc'] = 0
-                            meeting['full_list'] = ''
+                            meeting['StartTdoc'] = 0
+                            meeting['EndTdoc'] = 0
+                            meeting['FullList'] = ''
                     elif len(alist) == 1:
                         if headers[col].find('Files') >= 0:
                             if td.a.get('href') is not None:
@@ -404,7 +413,7 @@ class Z3gUtils:
                 raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + group_meeting_url)
         return res, meetings
 
-    def fetch_tdoc_list(self, url):
+    def fetch_tdoc_list(self, url, meeting):
         """
         Download tdoc list from remote site
         :param url:
@@ -422,6 +431,7 @@ class Z3gUtils:
                         tdoc[headers[col]] = str(td.a.string).strip()
                     elif td.string is not None:
                         tdoc[headers[col]] = str(td.string).strip()
+                    tdoc['Meeting'] = meeting
                     col = col + 1
                     list.append(tdoc)
             tdoc_list = pd.DataFrame(data=list, columns=tdoc_list_columns['columns'])
@@ -446,7 +456,7 @@ class Z3gUtils:
                 if res is True:
                     meeting = meetings.get(meeting_name.lower())
                     if meeting is not None:
-                        res, tdoc_list = self.fetch_tdoc_list(meeting['full_list'])
+                        res, tdoc_list = self.fetch_tdoc_list(meeting['full_list'], meeting['Meeting'])
         return res, tdoc_list
 
     def fetch_ftp_list(self, files_url, meeting):
@@ -481,9 +491,10 @@ class Z3gUtils:
                         if href is None:
                             continue
                         list.append({
-                            'tdoc'     : tdoc,
-                            'file_name': file_name,
-                            'href'     : href
+                            'Tdoc': tdoc,
+                            'FileName': file_name,
+                            'Meeting': meeting,
+                            'Href': href
                         })
         ftp_list = pd.DataFrame(data=list, columns=ftp_columns['columns'])
         return res, ftp_list
@@ -505,8 +516,23 @@ class Z3gUtils:
                 if res is True:
                     meeting = meetings.get(meeting_name.lower())
                     if meeting is not None:
-                        res, ftp_list = self.fetch_ftp_list(meeting['files'])
+                        res, ftp_list = self.fetch_ftp_list(meeting['Files'])
         return res, ftp_list
+
+    def get_tdoc(self, meeting_name: str, force_reload: bool = False) -> (bool, pd.DataFrame):
+        """
+        Get tdoc table from tdoc full list and ftp files. Will use ftp files as key
+        :param meeting_name:
+        :param force_reload:
+        :return:
+        """
+        res, ftp_list = self.get_ftp_list(meeting_name, force_reload)
+        if res is True and ftp_list.empty is False:
+            res, tdoc_list = self.get_ftp_list(meeting_name, force_reload)
+            if res is True and tdoc_list.empty is False:
+                tdoc = pd.concat(ftp_list, tdoc_list, join='inner', names=tdoc_columns['columns'], copy=False)
+                return tdoc
+        raise ResourceNotFoundErr('Tdocs cannot be found of meeting ' + meeting_name)
 
 
 class Z3gpp:

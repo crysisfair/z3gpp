@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f59e7ac1-d05d-42dd-9588-447453d40349" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/tests/test_z3gUtils.py" afterPath="$PROJECT_DIR$/tests/test_z3gUtils.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/z3gpp.iml" afterPath="$PROJECT_DIR$/.idea/z3gpp.iml" />
       <change beforePath="$PROJECT_DIR$/z3gpp.py" afterPath="$PROJECT_DIR$/z3gpp.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,19 +15,22 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/z3gpp$Unittests_in_test_z3gUtils_py.coverage" NAME="Unittests in test_z3gUtils.py Coverage Results" MODIFIED="1515696416331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/z3gpp$Unittests_in_test_z3gUtils_py.coverage" NAME="Unittests in test_z3gUtils.py Coverage Results" MODIFIED="1515957619854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="z3gpp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/z3gpp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="371" column="28" lean-forward="true" selection-start-line="371" selection-start-column="28" selection-end-line="371" selection-end-column="28" />
+            <state relative-caret-position="342">
+              <caret line="508" column="39" lean-forward="false" selection-start-line="508" selection-start-column="39" selection-end-line="508" selection-end-column="39" />
               <folding>
-                <element signature="e#1251#1348#0" expanded="false" />
-                <element signature="e#1394#2184#0" expanded="false" />
-                <element signature="e#2221#2837#0" expanded="false" />
+                <element signature="e#1009#1118#0" expanded="false" />
+                <element signature="e#1169#1278#0" expanded="false" />
+                <element signature="e#1301#3020#0" expanded="false" />
+                <element signature="e#1434#1531#0" expanded="false" />
+                <element signature="e#1577#2367#0" expanded="false" />
+                <element signature="e#2404#3020#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -35,11 +39,21 @@
       <file leaf-file-name="test_z3gUtils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="53" column="22" lean-forward="false" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="22" />
+            <state relative-caret-position="-380">
+              <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="groups.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/cache/groups.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="190">
+              <caret line="10" column="65" lean-forward="false" selection-start-line="10" selection-start-column="65" selection-end-line="10" selection-end-column="65" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -95,7 +109,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -112,21 +125,18 @@
               <item name="z3gpp" type="b2602c69:ProjectViewProjectNode" />
               <item name="z3gpp" type="462c0819:PsiDirectoryNode" />
               <item name="tests" type="462c0819:PsiDirectoryNode" />
-              <item name="result" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="z3gpp" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="cache" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="last_opened_file_path" value="$USER_HOME$/.pyenv/versions/anaconda3-5.0.1/bin" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
   <component name="RecentsManager">
@@ -251,15 +261,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 23h 05m 05s.xml">
-      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.11 at 23h 07m 06s.xml">
-      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.12 at 02h 22m 36s.xml">
-      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.12 at 02h 24m 53s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
@@ -281,6 +282,15 @@
     <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.12 at 02h 47m 03s.xml">
       <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
     </history-entry>
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.15 at 03h 18m 38s.xml">
+      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.15 at 03h 20m 00s.xml">
+      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_z3gUtils_py - 2018.01.15 at 03h 20m 31s.xml">
+      <configuration name="Unittests in test_z3gUtils.py" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -292,18 +302,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-4" width="1922" height="1029" extended-state="6" />
+    <frame x="-1" y="-11" width="1442" height="849" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32945284" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3993015" sideWeight="0.5019477" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27272728" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4408163" sideWeight="0.5034722" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31601125" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32945284" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44107744" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4408163" sideWeight="0.4965278" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33821872" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21634616" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15997131" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2553419" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18005739" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27457264" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39842874" sideWeight="0.4980523" order="3" side_tool="false" content_ui="tabs" />
@@ -360,28 +370,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>444</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>440</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_z3gUtils.py</url>
-          <line>58</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/z3gpp.py</url>
-          <line>394</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -482,12 +470,73 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/z3gpp.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3990">
+          <caret line="264" column="32" lean-forward="false" selection-start-line="264" selection-start-column="32" selection-end-line="264" selection-end-column="32" />
+          <folding>
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="855">
+          <caret line="53" column="22" lean-forward="false" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/cache/groupr1.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/z3gpp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="954">
+          <caret line="53" column="22" lean-forward="false" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/z3gpp.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5848">
           <caret line="398" column="0" lean-forward="false" selection-start-line="398" selection-start-column="0" selection-end-line="398" selection-end-column="0" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -507,9 +556,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -529,9 +581,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -551,9 +606,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -573,9 +631,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -601,10 +662,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tests/cache/groupr1.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="58" column="34" lean-forward="false" selection-start-line="58" selection-start-column="34" selection-end-line="58" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/cache/groups.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="65" lean-forward="false" selection-start-line="10" selection-start-column="65" selection-end-line="10" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_z3gUtils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="53" column="22" lean-forward="false" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="22" />
+        <state relative-caret-position="-380">
+          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -613,12 +690,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/z3gpp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="371" column="28" lean-forward="true" selection-start-line="371" selection-start-column="28" selection-end-line="371" selection-end-column="28" />
+        <state relative-caret-position="342">
+          <caret line="508" column="39" lean-forward="false" selection-start-line="508" selection-start-column="39" selection-end-line="508" selection-end-column="39" />
           <folding>
-            <element signature="e#1251#1348#0" expanded="false" />
-            <element signature="e#1394#2184#0" expanded="false" />
-            <element signature="e#2221#2837#0" expanded="false" />
+            <element signature="e#1009#1118#0" expanded="false" />
+            <element signature="e#1169#1278#0" expanded="false" />
+            <element signature="e#1301#3020#0" expanded="false" />
+            <element signature="e#1434#1531#0" expanded="false" />
+            <element signature="e#1577#2367#0" expanded="false" />
+            <element signature="e#2404#3020#0" expanded="false" />
           </folding>
         </state>
       </provider>
