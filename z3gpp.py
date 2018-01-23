@@ -51,7 +51,7 @@ group_name_translation = {
 }
 
 
-class ResourceNotFoundErr(Exception):
+class ResourceNotFoundExcept(Exception):
     def __init__(self, value):
         self.value = value
 
@@ -118,6 +118,59 @@ class Progress:
         sys.stdout.write('\n')
         sys.stdout.write(s)
         sys.stdout.write('\n')
+
+
+class Z3gResource:
+
+    def __int__(self, name, init: bool = False, data: pd.DataFrame = None):
+        self.init = init
+        self.name = name
+        if init is True:
+            self.data = data
+        else:
+            self.data = None
+
+    def empty(self):
+        if self.init is True:
+            return self.data.Empty
+        return True
+
+    def get_name(self):
+        return self.name
+
+    def get_data(self):
+        if self.init is True:
+            return self.data
+        else:
+            raise ResourceNotFoundExcept('Cannot get data of ' + self.name)
+
+    def get_iterrows(self):
+        if self.init is True:
+            for index, rows in self.data.iterrows():
+                yield rows
+        else:
+            raise StopIteration()
+
+    def find_str_in_rows(self, value: str, target_column: bool = None, whole_word_match=False, ignore_case=True):
+        if target_column is None:
+            find_all_column = True
+        else:
+            find_all_column = False
+        res = []
+        if find_all_column is True:
+            for row in self.get_iterrows():
+                for col in self.data.columns:
+                    if str(row.get(col)).lower().find(value.lower()) >= 0:
+                        res.append(row)
+        else:
+            for row in self.get_iterrows():
+                if row.get(target_column) is not None and str(row.get(target_column).lower().find(value.lower())) >= 0:
+                    res.append(row)
+        if len(res) > 0:
+            df = pd.DataFrame(res, columns=self.data.columns)
+            return df
+        else:
+            raise ResourceNotFoundExcept()
 
 
 class Z3gUtils:
@@ -528,11 +581,11 @@ class Z3gUtils:
         """
         res, ftp_list = self.get_ftp_list(meeting_name, force_reload)
         if res is True and ftp_list.empty is False:
-            res, tdoc_list = self.get_ftp_list(meeting_name, force_reload)
+            res, tdoc_list = self.get_tdoc_list(meeting_name, force_reload)
             if res is True and tdoc_list.empty is False:
                 tdoc = pd.concat(ftp_list, tdoc_list, join='inner', names=tdoc_columns['columns'], copy=False)
                 return tdoc
-        raise ResourceNotFoundErr('Tdocs cannot be found of meeting ' + meeting_name)
+        raise ResourceNotFoundExcept('Tdocs cannot be found of meeting ' + meeting_name)
 
 
 class Z3gpp:
