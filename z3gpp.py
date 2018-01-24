@@ -128,6 +128,10 @@ class Z3gResource:
     def __init__(self):
         self.type = 'base'
 
+    def __init__(self, name, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
+                 auto_load: bool = False):
+        pass
+
     def _init_resource(self, name, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
                        auto_load: bool = False):
         self.cache_root = cache_root
@@ -137,6 +141,7 @@ class Z3gResource:
         self.type = 'Base'
         if init is True:
             self.data = data
+            self.columns = data.columns
         else:
             self.data = None
         if auto_load is True:
@@ -169,10 +174,10 @@ class Z3gResource:
             os.mkdir(self.cache_root, mode=0o755)
         if data is None:
             if self.init is True:
-                data.to_csv(self.cache_root + self.get_name() + '.csv', sep=',')
+                data.to_csv(self.cache_root + self.name() + '.csv', sep=',')
         else:
             if type(data) is pd.DataFrame:
-                data.to_csv(self.cache_root + self.get_name() + '.csv', sep=',')
+                data.to_csv(self.cache_root + self.name() + '.csv', sep=',')
                 self.data = data
                 self.init = True
                 self.columns = data.columns
@@ -182,7 +187,7 @@ class Z3gResource:
         Load file from cached csv file. NOTE that name must be given.
         :return:
         """
-        path = self.cache_root + self.get_name() + '.csv'
+        path = self.cache_root + self.name() + '.csv'
         if os.path.exists(path) is True:
             self.data = pd.read_csv(path)
         return self.data
@@ -227,7 +232,7 @@ class Z3gResource:
         else:
             raise StopIteration()
 
-    def find_str_in_rows(self, value: str, target_column: bool = None, whole_word_match=False,
+    def find_str_in_rows(self, value: str, target_column: str = None, whole_word_match=False,
                          ignore_case=True) -> pd.DataFrame:
         """
         Find result(s) in DataFrame
@@ -243,26 +248,27 @@ class Z3gResource:
             find_all_column = False
         res = []
         if find_all_column is True:
-            for row in self.get_iterrows():
+            for row in self.iterrows():
                 for col in self.data.columns:
-                    if str(row.get(col)).lower().find(value.lower()) >= 0:
+                    if (ignore_case is True and str(row.get(col)).lower().find(value.lower()) >= 0) or (
+                            ignore_case is False and str(row.get(col)).find(value) >= 0):
                         res.append(row)
         else:
-            for row in self.get_iterrows():
+            for row in self.iterrows():
                 if row.get(target_column) is not None and str(row.get(target_column).lower().find(value.lower())) >= 0:
                     res.append(row)
         if len(res) > 0:
             df = pd.DataFrame(res, columns=self.data.columns)
             return df
         else:
-            raise ResourceNotFoundExcept()
+            raise ResourceNotFoundExcept('Cannot find {0} in {1} of type {2}'.format(value, self.name, self.type))
 
 
 class Z3gGroup(Z3gResource):
 
-    def __init__(self, name: str, init: object = False, data: object = None, columns: object = None,
-                 cache_root: object = 'cache/',
-                 auto_load: object = False) -> object:
+    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns: list = None,
+                 cache_root: str = 'cache/',
+                 auto_load: bool = False):
         Z3gResource.__int__()
         self.type = 'group'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
@@ -270,7 +276,8 @@ class Z3gGroup(Z3gResource):
 
 class Z3gMeeting(Z3gResource):
 
-    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
+    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
+                 cache_root='cache/',
                  auto_load: bool = False):
         Z3gResource.__int__()
         self.type = 'meeting'
@@ -279,7 +286,8 @@ class Z3gMeeting(Z3gResource):
 
 class Z3gTdocList(Z3gResource):
 
-    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
+    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
+                 cache_root='cache/',
                  auto_load: bool = False):
         Z3gResource.__int__()
         self.type = 'tdoc_list'
@@ -288,7 +296,8 @@ class Z3gTdocList(Z3gResource):
 
 class Z3gFtp(Z3gResource):
 
-    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
+    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
+                 cache_root='cache/',
                  auto_load: bool = False):
         Z3gResource.__int__()
         self.type = 'ftp'
@@ -297,7 +306,8 @@ class Z3gFtp(Z3gResource):
 
 class Z3gTdoc(Z3gResource):
 
-    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
+    def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
+                 cache_root='cache/',
                  auto_load: bool = False):
         Z3gResource.__int__()
         self.type = 'tdoc'
@@ -455,9 +465,8 @@ class Z3gUtils:
             if groups.empty is False:
                 print('Get ', len(groups.data()), ' groups')
                 groups.save()
-            else:
-                raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + urls['groups'])
-        return groups
+                return groups
+        raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + urls['groups'])
 
     def get_group_meeting_url(self, short_group_name, force_reload=True):
         """
@@ -468,7 +477,7 @@ class Z3gUtils:
         """
         groups = self.get_groups(force_reload)
         url = None
-        if res is True:
+        if groups.empty() is True:
             if short_group_name in group_name_translation:
                 long_name = group_name_translation[short_group_name]
                 for row in groups.iterrows():
@@ -582,6 +591,7 @@ class Z3gUtils:
         """
         Download tdoc list from remote site
         :param url:
+        :param meeting:
         :return:
         """
         res, headers, rows = self.fetch_table_rows(url)
@@ -628,11 +638,11 @@ class Z3gUtils:
         """
         Fetch tdoc list from ftp server.
         :param files_url: File_url is column 'files' of meeting
+        :param meeting:
         :return:
         """
         res, data = self.fetch(files_url)
         list = []
-        ftp_list = pd.DataFrame(columns=ftp_columns['columns'])
         if res is True:
             if data.find('Zips') >= 0:
                 soup = BeautifulSoup(data, 'lxml')
@@ -661,8 +671,9 @@ class Z3gUtils:
                             'Meeting': meeting,
                             'Href': href
                         })
-        ftp_list = pd.DataFrame(data=list, columns=ftp_columns['columns'])
-        return ftp_list.drop_duplicates()
+        ftp_list = Z3gFtp(name=meeting, init=True,
+                          data=pd.DataFrame(data=list, columns=ftp_columns['columns']).drop_duplicates())
+        return ftp_list
 
     def get_ftp_list(self, meeting_name, force_reload=False):
         """
@@ -673,6 +684,7 @@ class Z3gUtils:
         """
         splits = meeting_name.lower().split('-')
         ftp_list = Z3gFtp(meeting_name)
+        reason = ''
         if ftp_list.empty() is False or force_reload is True:
             if len(splits) >= 1:
                 group_name = splits[0]
@@ -682,7 +694,13 @@ class Z3gUtils:
                     if meeting is not None:
                         ftp_list.set_data(self.fetch_ftp_list(meeting['Files']))
                         return ftp_list
-        raise ResourceNotFoundExcept()
+                    else:
+                        reason = 'Search result is empty.'
+                else:
+                    reason = 'No such meeting.'
+            else:
+                reason = 'Meeting name is invalid.'
+        raise ResourceNotFoundExcept('Cannot get FTP list with {0}, reason: {1}'.format(meeting_name, reason))
 
     def get_tdoc(self, meeting_name: str, force_reload: bool = False) -> (bool, pd.DataFrame):
         """
