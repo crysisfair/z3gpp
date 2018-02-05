@@ -125,9 +125,6 @@ class Z3gResource:
     Base class for 3GPP resources
     """
 
-    def __init__(self):
-        self.type = 'base'
-
     def __init__(self, name, init: bool = False, data: pd.DataFrame = None, columns=None, cache_root='cache/',
                  auto_load: bool = False):
         pass
@@ -269,7 +266,6 @@ class Z3gGroup(Z3gResource):
     def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns: list = None,
                  cache_root: str = 'cache/',
                  auto_load: bool = False):
-        Z3gResource.__int__()
         self.type = 'group'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
 
@@ -279,7 +275,6 @@ class Z3gMeeting(Z3gResource):
     def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
                  cache_root='cache/',
                  auto_load: bool = False):
-        Z3gResource.__int__()
         self.type = 'meeting'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
 
@@ -289,7 +284,6 @@ class Z3gTdocList(Z3gResource):
     def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
                  cache_root='cache/',
                  auto_load: bool = False):
-        Z3gResource.__int__()
         self.type = 'tdoc_list'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
 
@@ -299,7 +293,6 @@ class Z3gFtp(Z3gResource):
     def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
                  cache_root='cache/',
                  auto_load: bool = False):
-        Z3gResource.__int__()
         self.type = 'ftp'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
 
@@ -309,7 +302,6 @@ class Z3gTdoc(Z3gResource):
     def __init__(self, name: str, init: bool = False, data: pd.DataFrame = None, columns=None,
                  cache_root='cache/',
                  auto_load: bool = False):
-        Z3gResource.__int__()
         self.type = 'tdoc'
         self._init_resource(name, init, data, columns, cache_root, auto_load)
 
@@ -318,10 +310,11 @@ class Z3gUtils:
     Utils for z3gpp
     """
 
-    def __init__(self, session, proxy, headers):
+    def __init__(self, session, proxy, headers, cache_root='cache/'):
         self.session = session
         self.proxy = proxy
         self.headers = headers
+        self.cache_root = cache_root
 
     def fetch(self, url, file=None, binary=False):
         """
@@ -477,14 +470,20 @@ class Z3gUtils:
         """
         groups = self.get_groups(force_reload)
         url = None
+        reason = ''
         if groups.empty() is True:
             if short_group_name in group_name_translation:
                 long_name = group_name_translation[short_group_name]
                 for row in groups.iterrows():
                     if long_name == row['Name']:
-                        url = row['Url']
-                        break
-        return url
+                        return row['Url']
+            else:
+                reason = 'No such group {0}'.format(short_group_name)
+        else:
+            reason = 'Cannot get groups data.'
+        if url is None:
+            reason = 'Cannot get meeting url from group'
+        raise ResourceNotFoundExcept('Cannot get url. Reason: ' + reason)
 
     def fetch_table_rows(self, url):
         """
@@ -552,7 +551,7 @@ class Z3gUtils:
                     elif len(alist) == 1:
                         if headers[col].find('Files') >= 0:
                             if td.a.get('href') is not None:
-                                meeting[headers[col]] = str(td.a.href)
+                                meeting[headers[col]] = str(td.a.href).replace(r'/tp/', r'/ftp/')
                             else:
                                 meeting[headers[col]] = ''
                         else:
@@ -581,7 +580,7 @@ class Z3gUtils:
             if res is True:
                 meetings.set_data(self.fetch_meetings(group_meeting_url))
             if meetings.empty is False:
-                print('Get ', len(meetings), ' meetings')
+                print('Get ', len(meetings.data()), ' meetings')
                 meetings.save()
             else:
                 raise PageFormatIncorrectExcept('Page format is not correct. Url is ' + group_meeting_url)
@@ -624,6 +623,7 @@ class Z3gUtils:
         tdoc_list = Z3gTdocList(meeting_name)
         if tdoc_list.empty() is False or force_reload is True:
             tdoc_list.set_data(pd.DataFrame(columns=tdoc_list_columns['columns']))
+            reason = ''
             if len(splits) >= 1:
                 group_name = splits[0]
                 meetings = self.get_meetings(group_name, force_reload)
@@ -632,13 +632,55 @@ class Z3gUtils:
                     if meeting is not None:
                         tdoc_list = self.fetch_tdoc_list(meeting['full_list'], meeting['Meeting'])
                         return tdoc_list
-        raise ResourceNotFoundExcept()
+                else:
+                    reason = 'Meeting is empty'
+            else:
+                reason = 'Meeting {0} name is invalid'.format(meeting_name)
+            raise ResourceNotFoundExcept('Cannot find target tdoc list. Reason: ' + reason)
+        else:
+            return tdoc_list
 
-    def fetch_ftp_list(self, files_url, meeting):
+    def fetch_tdoc_xls(self, files_url: str, meeting_name: str):
+        """
+        Download TDOC_LIST xls file from 3GPP ftp server
+        :param files_url: ftp url of Files, for example http://www.3gpp.org/ftp/TSG_RAN/WG1_RL1/TSGR1_90b/
+        :param meeting_name: Meeting name of this docs
+        :return: df of xls
+        """
+        res, data = self.fetch(files_url)
+        xls_file_ulr = ''
+        file_name = ''
+        if res is True:
+            if data.find('Zips') >= 0:
+                soup = BeautifulSoup(data, 'lxml')
+                with soup.find_all('a') as alist:
+                    for a in alist:
+                        if str(a.string).find('Zips') >= 0:
+                            new_url = a.get['href']
+                            if new_url is not None:
+                                return self.fetch_ftp_list(new_url, meeting_name)
+            else:
+                soup = BeautifulSoup(data, 'lxml')
+                for a in soup.pre.find_all('a'):
+                    if str(a.string).find('.xls') >= 0:
+                        xls_file_ulr = a.get('href')
+                        file_name = a.string
+                        if xls_file_ulr is None:
+                            raise ResourceNotFoundExcept('Cannot get XLS file from page' + files_url)
+                        else:
+                            break
+                res, data = self.fetch(xls_file_ulr, file=self.cache_root + file_name, binary=True)
+                if res is True:
+
+        ftp_list = Z3gFtp(name=meeting_name, init=True,
+                          data=pd.DataFrame(data=list, columns=ftp_columns['columns']).drop_duplicates())
+        return ftp_list
+
+    def fetch_ftp_list(self, files_url: str, meeting_name: str):
         """
         Fetch tdoc list from ftp server.
         :param files_url: File_url is column 'files' of meeting
-        :param meeting:
+        :param meeting_name:
         :return:
         """
         res, data = self.fetch(files_url)
@@ -651,7 +693,7 @@ class Z3gUtils:
                         if str(a.string).find('Zips') >= 0:
                             new_url = a.get['href']
                             if new_url is not None:
-                                return self.fetch_ftp_list(new_url, meeting)
+                                return self.fetch_ftp_list(new_url, meeting_name)
             else:
                 soup = BeautifulSoup(data, 'lxml')
                 for a in soup.pre.find_all('a'):
@@ -668,10 +710,10 @@ class Z3gUtils:
                         list.append({
                             'Tdoc': tdoc,
                             'FileName': file_name,
-                            'Meeting': meeting,
+                            'Meeting': meeting_name,
                             'Href': href
                         })
-        ftp_list = Z3gFtp(name=meeting, init=True,
+        ftp_list = Z3gFtp(name=meeting_name, init=True,
                           data=pd.DataFrame(data=list, columns=ftp_columns['columns']).drop_duplicates())
         return ftp_list
 
